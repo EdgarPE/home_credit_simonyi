@@ -1,6 +1,6 @@
 numpy
 pandas
-pandas_profiling
+pandas-profiling
 scikit-learn
 jupyter
 gcsfs
