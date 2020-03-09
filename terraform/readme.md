@@ -19,6 +19,16 @@
     ```
     cd home_credit_simonyi/terraform && \
     terraform init && \
-    terraform apply -auto-approve
+    terraform apply -auto-approve -var "project=$(gcloud config list project --format 'value(core.project)')"
     ```
 
+
+
+# Cleanup
+
+1. In terraform directory issue
+    ```
+    terraform destroy
+    ```
+2. Delete all Cloud Storage buckets
+3. Stop all VM instances
