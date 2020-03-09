@@ -21,6 +21,10 @@
     terraform init && \
     terraform apply -auto-approve -var "project=$(gcloud config list project --format 'value(core.project)')"
     ```
+7. Get the deployed MLFlow service URL
+    ```
+    gcloud run services list --platform managed
+    ```
 
 
 
