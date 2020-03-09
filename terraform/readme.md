@@ -18,6 +18,7 @@
 6. Apply terraform configuration. Type yes when prompted
     ```
     cd home_credit_simonyi/terraform && \
-    terraform apply
+    terraform init && \
+    terraform apply -auto-approve
     ```
 
