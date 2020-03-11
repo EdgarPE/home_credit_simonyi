@@ -15,22 +15,19 @@
     chmod +x ./terraform-installer/terraform-install.sh \
     ./terraform-installer/terraform-install.sh -a
     ```
-6. Apply terraform configuration. Type yes when prompted
+6. Apply terraform configuration. The URL of the MLFlow server will be displayed.
     ```
     cd home_credit_simonyi/terraform && \
     terraform init && \
     terraform apply -auto-approve -var "project=$(gcloud config list project --format 'value(core.project)')"
     ```
-7. Get the deployed MLFlow service URL
-    ```
-    gcloud run services list --platform managed
-    ```
+
 
 
 
 # Cleanup
 
-1. In terraform directory issue
+1. In terraform directory issue then approve the prompt with yes.
     ```
     terraform destroy
     ```
