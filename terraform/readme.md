@@ -12,7 +12,7 @@
         
 4. Run the terraform installler
     ```
-    chmod +x ./terraform-installer/terraform-install.sh \
+    chmod +x ./terraform-installer/terraform-install.sh && \
     ./terraform-installer/terraform-install.sh -a
     ```
 6. Apply terraform configuration. The URL of the MLFlow server will be displayed.

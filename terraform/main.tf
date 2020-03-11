@@ -43,10 +43,20 @@ provider "google" {
 }
 
 ## PostgreSQL configuration
+
+resource "random_string" "mlfow_suffix" {
+  length  = 5
+  special = false
+  upper = false
+  number = false
+
+}
+
 variable "pgsql_instance" {
   description = "PostgreSQL instance name"
-  default     = "mlflow"
+  default     = "mlflow-tracker"
 }
+
 resource "random_password" "pgsql_password" {
   length  = 16
   special = false
@@ -69,6 +79,7 @@ data "google_client_openid_userinfo" "current" {}
 locals {
   email           = data.google_client_openid_userinfo.current.email
   artifact_bucket = "${var.project}-${var.artifact_bucket_postfix}"
+  mlflow_sql_name = "${var.pgsql_instance}-${random_string.mlfow_suffix.result}"
 }
 
 # Outputs
@@ -77,13 +88,14 @@ data "google_client_config" "current" {}
 output "email" { value = local.email }
 output "project" { value = data.google_client_config.current.project }
 output "pgsql_password" { value = random_password.pgsql_password.result }
+output "artifact_bucket" {value = google_storage_bucket.artifact.url}
 output "url" { value = google_cloud_run_service.mlflow.status[0].url }
 
 # Resources
 
 ## Setup a PostgreSQL instance
 resource "google_sql_database_instance" "mlflow" {
-  name             = var.pgsql_instance
+  name             = local.mlflow_sql_name
   database_version = "POSTGRES_9_6"
   settings {
     tier = "db-f1-micro"
@@ -153,15 +165,15 @@ resource "google_cloud_run_service" "mlflow" {
         image = "gcr.io/${var.project}/mlflow-server"
         env {
           name  = "ARTIFACT_ROOT"
-          value = "${google_storage_bucket.artifact.name}/artifacts/"
+          value = "${google_storage_bucket.artifact.url}/artifacts/"
         }
         env {
           name  = "BACKEND_URI"
-          value = "postgresql://postgres:${google_sql_user.postgres.password}@/mlflow?host=/cloudsql/${var.project}:${var.region}:${var.pgsql_instance}"
+          value = "postgresql://postgres:${google_sql_user.postgres.password}@/mlflow?host=/cloudsql/${var.project}:${var.region}:${local.mlflow_sql_name}"
         }
         env {
           name  = "INSTANCE_CONNECTION_NAME"
-          value = "${var.project}:${var.region}:${var.pgsql_instance}"
+          value = "${var.project}:${var.region}:${local.mlflow_sql_name}"
         }
 
         resources {
@@ -174,7 +186,7 @@ resource "google_cloud_run_service" "mlflow" {
 
     metadata {
       annotations = {
-        "run.googleapis.com/cloudsql-instances" = "${var.project}:${var.region}:${var.pgsql_instance}"
+        "run.googleapis.com/cloudsql-instances" = "${var.project}:${var.region}:${local.mlflow_sql_name}"
       }
     }
   }
