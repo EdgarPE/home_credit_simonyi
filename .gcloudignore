@@ -1,0 +1,6 @@
+!trainer_pipe.pkl
+profiling
+terraform
+default_ris_package
+*.ipynb
+*ipnb_checkpoints
