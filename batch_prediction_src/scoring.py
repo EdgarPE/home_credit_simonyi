@@ -13,8 +13,17 @@ input_data = pd.read_csv('gs://home-credit-simonyi-workshop/input/application_tr
 
 
 # load our saved pipeline pickle file.
-with open('trained_pipe.pkl', 'rb') as f:
-    pipe = pickle.load(f)
+try:
+    with open('trained_pipe.pkl', 'rb') as f:
+        pipe = pickle.load(f)
+
+except FileNotFoundError:
+    with open('batch_prediction_src/trained_pipe.pkl', 'rb') as f:
+            pipe = pickle.load(f)
+except:
+    print('Model not found.')
+    
+        
 
 # Define our feature columns
 feature_cols = [
@@ -42,7 +51,7 @@ out_data = input_data[['SK_ID_CURR', 'prediction','time']]
 bq_table = 'simonyi_ml.prediction_scores'
 pandas_gbq.to_gbq(dataframe=out_data,
                   destination_table=bq_table,
-                  project_id='norbert-liki-sandbox',
+                  project_id='norbert-liki-sandbox',   ## CHANGE THIS TO YOUR PROJECT_ID
                   if_exists='append')
 
 print('Success.')
