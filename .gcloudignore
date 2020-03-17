@@ -1,0 +1,5 @@
+
+!trainer_pipe.pkl
+*.ipynb
+*ipnb_checkpoints
+__pycache__

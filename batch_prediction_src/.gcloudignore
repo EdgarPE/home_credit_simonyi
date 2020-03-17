@@ -1,0 +1,7 @@
+!trainer_pipe.pkl
+*.ipynb
+*ipnb_checkpoints
+__pycache__
+
+
+python -m ipykernel install --name simonyi_workshop --display-name "Python (simonyi_workshop)"
