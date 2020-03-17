@@ -1,0 +1,7 @@
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/home_credit_scoring', 'batch_prediction_src/']
+  timeout: 600s
+tags: ['latest']
+images: ['gcr.io/$PROJECT_ID/home_credit_scoring']

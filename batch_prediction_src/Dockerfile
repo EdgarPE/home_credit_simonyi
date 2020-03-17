@@ -1,7 +1,8 @@
 FROM continuumio/miniconda3 as builder
 
 ADD conda_env.yaml /
-RUN conda env create -f conda_env.yaml
+RUN conda env create -f conda_env.yaml && \
+    conda clean -a -y
 
 FROM builder
 ADD scoring.py shutdown.py trained_pipe.pkl /
